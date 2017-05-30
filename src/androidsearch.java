@@ -41,7 +41,6 @@ public class androidsearch extends HttpServlet {
 			perPage = 10;
 		else
 			perPage = Integer.parseInt(request.getParameter("perPage"));
-
 		PrintWriter out = response.getWriter();
         //response.setContentType("text/html"); // Response mime type
 		out.println("Title = " + search);
