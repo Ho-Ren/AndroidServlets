@@ -32,48 +32,20 @@ public class androidsearch extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// TODO Auto-generated method stub
 		String search = request.getParameter("title");
-		int perPage;
-		String order = request.getParameter("order");
-		if (order == null){
-			order = "asc";
-		}
-		if (request.getParameter("perPage") == null)
-			perPage = 10;
-		else
-			perPage = Integer.parseInt(request.getParameter("perPage"));
 		PrintWriter out = response.getWriter();
         //response.setContentType("text/html"); // Response mime type
 		out.println("Title = " + search);
-		int pageNum;
-		String value;
-
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			Connection dbcon = DriverManager.getConnection("jdbc:mysql:///moviedb?autoReconnect=true&useSSL=false", Globals.un, Globals.pw);
 			Statement statement = dbcon.createStatement();
 			String query;
 			//create query for browse by title to get number of pages for pagination
-			query = "select * from movies where movies.title LIKE '"+search +"%'";
-			value ="title";
-			// get number of rows in the list
+			query = "select * from movies where match(movies.title) against ('" +search +"' In boolean mode)";
 			ResultSet result = statement.executeQuery(query);
-//			result.last();
-//			int total = result.getRow();
-//			System.out.println("total page: " + total);
-//			pageNum = (total <= perPage ? 0 : (int)(Math.ceil((double)result.getRow() / perPage)));
-//				// get current page and set limit and offset query is based on the parameter again
-//			int offset;
-//			System.out.println(request.getParameter("page"));
-//			if (request.getParameter("page") == null) {
-//					offset = 0;
-//			} else {
-//				offset = (Integer.parseInt(request.getParameter("page"))-1) * perPage;
-//			}
-			ArrayList <String> movieList = new ArrayList<String>();
 			while (result.next()) {
 				String title = result.getString("title");		
 				out.println(title);
-				movieList.add(title);
 			}
 		//	request.setAttribute("value", value);
 			//request.setAttribute("pageNum", pageNum);
